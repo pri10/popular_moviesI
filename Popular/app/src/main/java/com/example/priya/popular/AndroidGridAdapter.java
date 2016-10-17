@@ -32,10 +32,12 @@ import java.util.List;
 public class AndroidGridAdapter extends ArrayAdapter {
     private String[] imageURLArray;
     private LayoutInflater inflater;
+    String URL="http://api.themoviedb.org/3/movie/popular?api_key=[5fabb477f70d2445251714d9911e933f]";
 
 
     public AndroidGridAdapter(Context context, int resource, String[] imageArray) {
         super(context, resource, imageArray);
+
 
         // TODO Auto-generated constructor stub
         inflater = ((Activity)context).getLayoutInflater();
@@ -50,27 +52,26 @@ public class AndroidGridAdapter extends ArrayAdapter {
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
-        ViewHolder viewHolder=null;
+
+        ImageHolder holder;
+        holder = new ImageHolder();
+        convertView.setTag(holder);
+        holder.imageIcon= (ImageView) convertView.findViewById(R.id.imageview);
         if (convertView == null) {
-            convertView=inflater.inflate(R.layout.grid_view_item,null);
-            viewHolder = new ViewHolder();
-
-            viewHolder.imageView = (ImageView)convertView.findViewById(R.id.imageview);
-
-            convertView.setTag(viewHolder);
-
+            Picasso.with(getContext())
+                    .load(URL)
+                    .into(holder.imageIcon);
         }
-
-
-
-        viewHolder = (ViewHolder)convertView.getTag();
-
-        viewHolder.imageURL = imageURLArray[position];
 
         new DownloadAsyncTask().execute();
 
         return convertView;
+
+    }
+
+    static class ImageHolder
+    {
+        ImageView imageIcon;
 
     }
 
